@@ -1,28 +1,11 @@
 #!/usr/bin/env bash
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
-#=================================================================#
-#   System Required:  CentOS 6,7, Debian, Ubuntu                  #
-#   Description: One click Install ShadowsocksR Server            #
-#   Author: Teddysun <i@teddysun.com>                             #
-#   Thanks: @breakwa11 <https://twitter.com/breakwa11>            #
-#   Intro:  https://shadowsocks.be/9.html                         #
-#=================================================================#
-
-clear
-echo
-echo "#############################################################"
-echo "# One click Install ShadowsocksR Server                     #"
-echo "# Intro: https://shadowsocks.be/9.html                      #"
-echo "# Author: Teddysun <i@teddysun.com>                         #"
-echo "# Github: https://github.com/shadowsocksr/shadowsocksr      #"
-echo "#############################################################"
-echo
 
 libsodium_file="libsodium-1.0.17"
-libsodium_url="https://github.com/jedisct1/libsodium/releases/download/1.0.17/libsodium-1.0.17.tar.gz"
+libsodium_url="https://github.com/hewill007/ssh/releases/download/1.0/libsodium-1.0.17.tar.gz"
 shadowsocks_r_file="shadowsocksr-3.2.2"
-shadowsocks_r_url="https://github.com/shadowsocksrr/shadowsocksr/archive/3.2.2.tar.gz"
+shadowsocks_r_url="https://github.com/hewill007/ssh/releases/download/1.0/shadowsocksr-3.2.2.tar.gz"
 
 #Current folder
 cur_dir=`pwd`
@@ -45,9 +28,6 @@ xchacha20
 xsalsa20
 rc4-md5
 )
-# Reference URL:
-# https://github.com/shadowsocksr-rm/shadowsocks-rss/blob/master/ssr.md
-# https://github.com/shadowsocksrr/shadowsocksr/commit/a3cf0254508992b7126ab1151df0c2f10bf82680
 # Protocol
 protocols=(
 origin
@@ -195,8 +175,8 @@ pre_install(){
     fi
     # Set ShadowsocksR config password
     echo "Please enter password for ShadowsocksR:"
-    read -p "(Default password: teddysun.com):" shadowsockspwd
-    [ -z "${shadowsockspwd}" ] && shadowsockspwd="teddysun.com"
+    read -p "(Default password: O#wr{9nH1nm>gd@.):" shadowsockspwd
+    [ -z "${shadowsockspwd}" ] && shadowsockspwd="O#wr{9nH1nm>gd@."
     echo
     echo "---------------------------"
     echo "password = ${shadowsockspwd}"
@@ -205,7 +185,7 @@ pre_install(){
     # Set ShadowsocksR config port
     while true
     do
-    dport=$(shuf -i 9000-19999 -n 1)
+    dport="56789"
     echo -e "Please enter a port for ShadowsocksR [1-65535]"
     read -p "(Default port: ${dport}):" shadowsocksport
     [ -z "${shadowsocksport}" ] && shadowsocksport=${dport}
@@ -231,7 +211,7 @@ pre_install(){
         hint="${ciphers[$i-1]}"
         echo -e "${green}${i}${plain}) ${hint}"
     done
-    read -p "Which cipher you'd select(Default: ${ciphers[1]}):" pick
+    read -p "Which cipher you'd select(Default: ${ciphers[15]}):" pick
     [ -z "$pick" ] && pick=2
     expr ${pick} + 1 &>/dev/null
     if [ $? -ne 0 ]; then
@@ -259,7 +239,7 @@ pre_install(){
         hint="${protocols[$i-1]}"
         echo -e "${green}${i}${plain}) ${hint}"
     done
-    read -p "Which protocol you'd select(Default: ${protocols[0]}):" protocol
+    read -p "Which protocol you'd select(Default: ${protocols[5]}):" protocol
     [ -z "$protocol" ] && protocol=1
     expr ${protocol} + 1 &>/dev/null
     if [ $? -ne 0 ]; then
@@ -287,7 +267,7 @@ pre_install(){
         hint="${obfs[$i-1]}"
         echo -e "${green}${i}${plain}) ${hint}"
     done
-    read -p "Which obfs you'd select(Default: ${obfs[0]}):" r_obfs
+    read -p "Which obfs you'd select(Default: ${obfs[7]}):" r_obfs
     [ -z "$r_obfs" ] && r_obfs=1
     expr ${r_obfs} + 1 &>/dev/null
     if [ $? -ne 0 ]; then
@@ -334,12 +314,12 @@ download_files(){
     fi
     # Download ShadowsocksR init script
     if check_sys packageManager yum; then
-        if ! wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR -O /etc/init.d/shadowsocks; then
+        if ! wget --no-check-certificate https://github.com/hewill007/ssh/blob/main/lib/shadowsocksR -O /etc/init.d/shadowsocks; then
             echo -e "[${red}Error${plain}] Failed to download ShadowsocksR chkconfig file!"
             exit 1
         fi
     elif check_sys packageManager apt; then
-        if ! wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR-debian -O /etc/init.d/shadowsocks; then
+        if ! wget --no-check-certificate https://github.com/hewill007/ssh/blob/main/lib/shadowsocksR-debian -O /etc/init.d/shadowsocks; then
             echo -e "[${red}Error${plain}] Failed to download ShadowsocksR chkconfig file!"
             exit 1
         fi
@@ -442,11 +422,10 @@ install(){
         echo -e "Your obfs             : \033[41;37m ${shadowsockobfs} \033[0m"
         echo -e "Your Encryption Method: \033[41;37m ${shadowsockscipher} \033[0m"
         echo
-        echo "Welcome to visit:https://shadowsocks.be/9.html"
         echo "Enjoy it!"
         echo
     else
-        echo "ShadowsocksR install failed, please Email to Teddysun <i@teddysun.com> and contact"
+        echo "ShadowsocksR install failed, please try again"
         install_cleanup
         exit 1
     fi
@@ -457,7 +436,6 @@ install_cleanup(){
     cd ${cur_dir}
     rm -rf ${shadowsocks_r_file}.tar.gz ${shadowsocks_r_file} ${libsodium_file}.tar.gz ${libsodium_file}
 }
-
 
 # Uninstall ShadowsocksR
 uninstall_shadowsocksr(){
